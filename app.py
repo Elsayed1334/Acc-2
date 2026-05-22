@@ -49,7 +49,7 @@ const Toast = ({ msg, type, onClose }) => (
     animation: "slideUp 0.3s ease",
   }}>
     {msg}
-    <button onClick={onClose} style={{ background: "none", border: "none", color: "#fff", cursor: "pointer" }}>âœ•</button>
+    <button onClick={onClose} style={{ background: "none", border: "none", color: "#fff", cursor: "pointer" }}>✕</button>
   </div>
 );
 
@@ -148,7 +148,7 @@ const MetricCard = ({ label, value, color, icon }) => (
 );
 
 // ========== TABLE ==========
-const Table = ({ cols, rows, emptyMsg = "ظ„ط§ طھظˆط¬ط¯ ط¨ظٹط§ظ†ط§طھ" }) => (
+const Table = ({ cols, rows, emptyMsg = "لا توجد بيانات" }) => (
   <div style={{ overflowX: "auto" }}>
     <table style={{ width: "100%", borderCollapse: "collapse", fontFamily: "Tajawal, sans-serif", direction: "rtl" }}>
       <thead>
@@ -179,8 +179,8 @@ const Table = ({ cols, rows, emptyMsg = "ظ„ط§ طھظˆط¬ط¯ ط¨ظٹط§
 
 // Dashboard
 const Dashboard = ({ products, partners, transactions }) => {
-  const sales = transactions.filter(t => t.type === "ط¨ظٹط¹");
-  const purchases = transactions.filter(t => t.type === "ط´ط±ط§ط،");
+  const sales = transactions.filter(t => t.type === "بيع");
+  const purchases = transactions.filter(t => t.type === "شراء");
   const salesTotal = sales.reduce((s, t) => s + t.total, 0);
   const purchasesTotal = purchases.reduce((s, t) => s + t.total, 0);
   const inventoryValue = products.reduce((s, p) => s + p.stock * p.cost_price, 0);
@@ -203,27 +203,27 @@ const Dashboard = ({ products, partners, transactions }) => {
 
   return (
     <div>
-      <h2 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", marginBottom: 24 }}>ظ„ظˆط­ط© ط§ظ„ظ‚ظٹط§ط¯ط© ط§ظ„ظ…ط§ظ„ظٹط©</h2>
+      <h2 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", marginBottom: 24 }}>لوحة القيادة المالية</h2>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 32 }}>
-        <MetricCard label="ط¥ط¬ظ…ط§ظ„ظٹ ط§ظ„ظ…ط¨ظٹط¹ط§طھ" value={`${salesTotal.toLocaleString("ar")} ط±.ط³`} color="#10b981" icon="chart" />
-        <MetricCard label="ط¥ط¬ظ…ط§ظ„ظٹ ط§ظ„ظ…ط´طھط±ظٹط§طھ" value={`${purchasesTotal.toLocaleString("ar")} ط±.ط³`} color="#6366f1" icon="money" />
-        <MetricCard label="ظ‚ظٹظ…ط© ط§ظ„ظ…ط®ط²ظˆظ†" value={`${inventoryValue.toLocaleString("ar")} ط±.ط³`} color="#f59e0b" icon="inventory" />
-        <MetricCard label="طµط§ظپظٹ ط§ظ„ط£ط±ط¨ط§ط­" value={`${netProfit.toLocaleString("ar")} ط±.ط³`} color={netProfit >= 0 ? "#10b981" : "#ef4444"} icon="money" />
+        <MetricCard label="إجمالي المبيعات" value={`${salesTotal.toLocaleString("ar")} ر.س`} color="#10b981" icon="chart" />
+        <MetricCard label="إجمالي المشتريات" value={`${purchasesTotal.toLocaleString("ar")} ر.س`} color="#6366f1" icon="money" />
+        <MetricCard label="قيمة المخزون" value={`${inventoryValue.toLocaleString("ar")} ر.س`} color="#f59e0b" icon="inventory" />
+        <MetricCard label="صافي الأرباح" value={`${netProfit.toLocaleString("ar")} ر.س`} color={netProfit >= 0 ? "#10b981" : "#ef4444"} icon="money" />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
         {/* Payment Methods */}
         <div style={{ background: "#1a1f2e", borderRadius: 16, padding: 24, border: "1px solid #2d3447" }}>
-          <h3 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: "0 0 20px", fontSize: 16 }}>ًں’³ طھظˆط²ظٹط¹ ط·ط±ظ‚ ط§ظ„ط¯ظپط¹</h3>
+          <h3 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: "0 0 20px", fontSize: 16 }}>💳 توزيع طرق الدفع</h3>
           {Object.keys(byMethod).length === 0 ? (
-            <p style={{ color: "#475569", fontFamily: "Tajawal, sans-serif", textAlign: "center", padding: 20 }}>ظ„ط§ طھظˆط¬ط¯ ط¨ظٹط§ظ†ط§طھ ط¨ط¹ط¯</p>
+            <p style={{ color: "#475569", fontFamily: "Tajawal, sans-serif", textAlign: "center", padding: 20 }}>لا توجد بيانات بعد</p>
           ) : Object.entries(byMethod).map(([method, total]) => {
             const pct = Math.round(total / (salesTotal + purchasesTotal) * 100) || 0;
             return (
               <div key={method} style={{ marginBottom: 14 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6, direction: "rtl" }}>
                   <span style={{ color: "#94a3b8", fontFamily: "Tajawal, sans-serif", fontSize: 13 }}>{method}</span>
-                  <span style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", fontSize: 13, fontWeight: 700 }}>{total.toLocaleString("ar")} ط±.ط³</span>
+                  <span style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", fontSize: 13, fontWeight: 700 }}>{total.toLocaleString("ar")} ر.س</span>
                 </div>
                 <div style={{ height: 8, background: "#0f1219", borderRadius: 4, overflow: "hidden" }}>
                   <div style={{ height: "100%", width: `${pct}%`, background: "linear-gradient(90deg, #6366f1, #8b5cf6)", borderRadius: 4, transition: "width 0.6s ease" }} />
@@ -235,16 +235,16 @@ const Dashboard = ({ products, partners, transactions }) => {
 
         {/* Low Stock Alerts */}
         <div style={{ background: "#1a1f2e", borderRadius: 16, padding: 24, border: "1px solid #2d3447" }}>
-          <h3 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: "0 0 20px", fontSize: 16 }}>ًںڑ¨ طھظ†ط¨ظٹظ‡ط§طھ ط§ظ„ظ…ط®ط²ظˆظ†</h3>
+          <h3 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: "0 0 20px", fontSize: 16 }}>🚨 تنبيهات المخزون</h3>
           {products.filter(p => p.stock <= p.min_limit).length === 0 ? (
             <div style={{ textAlign: "center", padding: 20 }}>
-              <div style={{ color: "#10b981", fontSize: 32, marginBottom: 8 }}>âœ…</div>
-              <p style={{ color: "#10b981", fontFamily: "Tajawal, sans-serif" }}>ط§ظ„ظ…ط®ط²ظˆظ† ظپظٹ ظˆط¶ط¹ ظ…ظ…طھط§ط²</p>
+              <div style={{ color: "#10b981", fontSize: 32, marginBottom: 8 }}>✅</div>
+              <p style={{ color: "#10b981", fontFamily: "Tajawal, sans-serif" }}>المخزون في وضع ممتاز</p>
             </div>
           ) : products.filter(p => p.stock <= p.min_limit).map(p => (
             <div key={p.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "#ef444415", borderRadius: 10, marginBottom: 8, direction: "rtl", border: "1px solid #ef444430" }}>
               <span style={{ color: "#fca5a5", fontFamily: "Tajawal, sans-serif", fontSize: 14 }}>{p.name}</span>
-              <span style={{ color: "#ef4444", fontFamily: "Tajawal, sans-serif", fontSize: 13, fontWeight: 700 }}>ظ…طھط¨ظ‚ظٹ: {p.stock}</span>
+              <span style={{ color: "#ef4444", fontFamily: "Tajawal, sans-serif", fontSize: 13, fontWeight: 700 }}>متبقي: {p.stock}</span>
             </div>
           ))}
         </div>
@@ -252,14 +252,14 @@ const Dashboard = ({ products, partners, transactions }) => {
 
       {/* Recent Transactions */}
       <div style={{ background: "#1a1f2e", borderRadius: 16, padding: 24, border: "1px solid #2d3447", marginTop: 24 }}>
-        <h3 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: "0 0 20px", fontSize: 16 }}>ًں“œ ط¢ط®ط± ط§ظ„ط¹ظ…ظ„ظٹط§طھ</h3>
+        <h3 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: "0 0 20px", fontSize: 16 }}>📜 آخر العمليات</h3>
         <Table
-          cols={["ط±ظ‚ظ…", "ط§ظ„ظ†ظˆط¹", "ط§ظ„ط·ط±ظپ", "ط§ظ„ظ…ظ†طھط¬", "ط§ظ„ظƒظ…ظٹط©", "ط§ظ„ط¥ط¬ظ…ط§ظ„ظٹ", "ط§ظ„ط¯ظپط¹", "ط§ظ„طھط§ط±ظٹط®"]}
+          cols={["رقم", "النوع", "الطرف", "المنتج", "الكمية", "الإجمالي", "الدفع", "التاريخ"]}
           rows={recent.map(t => [
             `#${t.id}`,
-            <span style={{ color: t.type === "ط¨ظٹط¹" ? "#10b981" : "#6366f1", fontWeight: 700 }}>{t.type}</span>,
+            <span style={{ color: t.type === "بيع" ? "#10b981" : "#6366f1", fontWeight: 700 }}>{t.type}</span>,
             t.partner_name, t.product_name, t.quantity,
-            `${t.total.toLocaleString("ar")} ط±.ط³`, t.payment_method,
+            `${t.total.toLocaleString("ar")} ر.س`, t.payment_method,
             t.date
           ])}
         />
@@ -275,7 +275,7 @@ const Inventory = ({ products, setProducts, toast }) => {
   const [form, setForm] = useState({ barcode: "", name: "", cost_price: "", sale_price: "", min_limit: "5" });
 
   const save = () => {
-    if (!form.name.trim()) return toast("ط£ط¯ط®ظ„ ط§ط³ظ… ط§ظ„ظ…ظ†طھط¬", "error");
+    if (!form.name.trim()) return toast("أدخل اسم المنتج", "error");
     const prods = DB.get("products");
     const newProd = { id: DB.nextId(prods), barcode: form.barcode, name: form.name, stock: 0, cost_price: +form.cost_price || 0, sale_price: +form.sale_price || 0, min_limit: +form.min_limit || 5 };
     const updated = [...prods, newProd];
@@ -283,15 +283,15 @@ const Inventory = ({ products, setProducts, toast }) => {
     setProducts(updated);
     setShowModal(false);
     setForm({ barcode: "", name: "", cost_price: "", sale_price: "", min_limit: "5" });
-    toast("طھظ… ط­ظپط¸ ط§ظ„ظ…ظ†طھط¬ ط¨ظ†ط¬ط§ط­ âœ…", "success");
+    toast("تم حفظ المنتج بنجاح ✅", "success");
   };
 
   const del = (id) => {
-    if (!confirm("ظ‡ظ„ طھط±ظٹط¯ ط­ط°ظپ ظ‡ط°ط§ ط§ظ„ظ…ظ†طھط¬طں")) return;
+    if (!confirm("هل تريد حذف هذا المنتج؟")) return;
     const updated = products.filter(p => p.id !== id);
     DB.set("products", updated);
     setProducts(updated);
-    toast("طھظ… ط§ظ„ط­ط°ظپ", "warn");
+    toast("تم الحذف", "warn");
   };
 
   const filtered = products.filter(p => p.name.includes(search) || p.barcode?.includes(search));
@@ -299,45 +299,45 @@ const Inventory = ({ products, setProducts, toast }) => {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, direction: "rtl" }}>
-        <h2 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: 0 }}>ط¥ط¯ط§ط±ط© ط§ظ„ظ…ط®ط²ظˆظ† ظˆط§ظ„ظ…ظ†طھط¬ط§طھ</h2>
-        <Btn icon="plus" onClick={() => setShowModal(true)}>ط¥ط¶ط§ظپط© ظ…ظ†طھط¬</Btn>
+        <h2 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: 0 }}>إدارة المخزون والمنتجات</h2>
+        <Btn icon="plus" onClick={() => setShowModal(true)}>إضافة منتج</Btn>
       </div>
 
       <div style={{ background: "#1a1f2e", borderRadius: 16, padding: 24, border: "1px solid #2d3447", marginBottom: 16 }}>
-        <Input label="ًں”چ ط¨ط­ط« ط¹ظ† ظ…ظ†طھط¬" placeholder="ط§ط³ظ… ط§ظ„ظ…ظ†طھط¬ ط£ظˆ ط§ظ„ط¨ط§ط±ظƒظˆط¯..." value={search} onChange={e => setSearch(e.target.value)} />
+        <Input label="🔍 بحث عن منتج" placeholder="اسم المنتج أو الباركود..." value={search} onChange={e => setSearch(e.target.value)} />
       </div>
 
       <div style={{ background: "#1a1f2e", borderRadius: 16, border: "1px solid #2d3447", overflow: "hidden" }}>
         <Table
-          cols={["ط§ظ„ط¨ط§ط±ظƒظˆط¯", "ط§ط³ظ… ط§ظ„ط³ظ„ط¹ط©", "ط§ظ„ظƒظ…ظٹط©", "ط³ط¹ط± ط§ظ„طھظƒظ„ظپط©", "ط³ط¹ط± ط§ظ„ط¨ظٹط¹", "ظ‚ظٹظ…ط© ط§ظ„ظ…ط®ط²ظˆظ†", "ط§ظ„ط­ط¯ ط§ظ„ط£ط¯ظ†ظ‰", "ط§ظ„ط­ط§ظ„ط©", "ط­ط°ظپ"]}
+          cols={["الباركود", "اسم السلعة", "الكمية", "سعر التكلفة", "سعر البيع", "قيمة المخزون", "الحد الأدنى", "الحالة", "حذف"]}
           rows={filtered.map(p => [
-            p.barcode || "â€”",
+            p.barcode || "—",
             <strong style={{ color: "#f1f5f9" }}>{p.name}</strong>,
             <span style={{ color: p.stock <= p.min_limit ? "#ef4444" : "#10b981", fontWeight: 700 }}>{p.stock}</span>,
-            `${p.cost_price.toFixed(2)} ط±.ط³`,
-            `${p.sale_price.toFixed(2)} ط±.ط³`,
-            `${(p.stock * p.cost_price).toFixed(2)} ط±.ط³`,
+            `${p.cost_price.toFixed(2)} ر.س`,
+            `${p.sale_price.toFixed(2)} ر.س`,
+            `${(p.stock * p.cost_price).toFixed(2)} ر.س`,
             p.min_limit,
             p.stock <= p.min_limit
-              ? <span style={{ color: "#ef4444", fontSize: 12, background: "#ef444415", padding: "3px 8px", borderRadius: 6 }}>ظ†ظپط°</span>
-              : <span style={{ color: "#10b981", fontSize: 12, background: "#10b98115", padding: "3px 8px", borderRadius: 6 }}>ظ…طھظˆظپط±</span>,
-            <button onClick={() => del(p.id)} style={{ background: "#ef444420", border: "none", color: "#ef4444", borderRadius: 8, padding: "4px 10px", cursor: "pointer" }}>ط­ط°ظپ</button>
+              ? <span style={{ color: "#ef4444", fontSize: 12, background: "#ef444415", padding: "3px 8px", borderRadius: 6 }}>نفذ</span>
+              : <span style={{ color: "#10b981", fontSize: 12, background: "#10b98115", padding: "3px 8px", borderRadius: 6 }}>متوفر</span>,
+            <button onClick={() => del(p.id)} style={{ background: "#ef444420", border: "none", color: "#ef4444", borderRadius: 8, padding: "4px 10px", cursor: "pointer" }}>حذف</button>
           ])}
         />
       </div>
 
       {showModal && (
-        <Modal title="ط¥ط¶ط§ظپط© ظ…ظ†طھط¬ ط¬ط¯ظٹط¯" onClose={() => setShowModal(false)}>
-          <Input label="ط§ظ„ط¨ط§ط±ظƒظˆط¯ (ط§ط®طھظٹط§ط±ظٹ)" value={form.barcode} onChange={e => setForm({ ...form, barcode: e.target.value })} placeholder="ظ…ط«ط§ظ„: 628..." />
-          <Input label="ط§ط³ظ… ط§ظ„ظ…ظ†طھط¬ *" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="ط§ط³ظ… ط§ظ„ط³ظ„ط¹ط© ط£ظˆ ط§ظ„ط®ط¯ظ…ط©" />
+        <Modal title="إضافة منتج جديد" onClose={() => setShowModal(false)}>
+          <Input label="الباركود (اختياري)" value={form.barcode} onChange={e => setForm({ ...form, barcode: e.target.value })} placeholder="مثال: 628..." />
+          <Input label="اسم المنتج *" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="اسم السلعة أو الخدمة" />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <Input label="ط³ط¹ط± ط§ظ„ط´ط±ط§ط، (ط§ظ„طھظƒظ„ظپط©)" type="number" value={form.cost_price} onChange={e => setForm({ ...form, cost_price: e.target.value })} placeholder="0.00" />
-            <Input label="ط³ط¹ط± ط§ظ„ط¨ظٹط¹" type="number" value={form.sale_price} onChange={e => setForm({ ...form, sale_price: e.target.value })} placeholder="0.00" />
+            <Input label="سعر الشراء (التكلفة)" type="number" value={form.cost_price} onChange={e => setForm({ ...form, cost_price: e.target.value })} placeholder="0.00" />
+            <Input label="سعر البيع" type="number" value={form.sale_price} onChange={e => setForm({ ...form, sale_price: e.target.value })} placeholder="0.00" />
           </div>
-          <Input label="ط­ط¯ ط§ظ„طھظ†ط¨ظٹظ‡ (ط§ظ„ط­ط¯ ط§ظ„ط£ط¯ظ†ظ‰ ظ„ظ„ظ…ط®ط²ظˆظ†)" type="number" value={form.min_limit} onChange={e => setForm({ ...form, min_limit: e.target.value })} />
+          <Input label="حد التنبيه (الحد الأدنى للمخزون)" type="number" value={form.min_limit} onChange={e => setForm({ ...form, min_limit: e.target.value })} />
           <div style={{ display: "flex", gap: 12, justifyContent: "flex-start" }}>
-            <Btn variant="success" icon="check" onClick={save}>ط­ظپط¸ ط§ظ„ظ…ظ†طھط¬</Btn>
-            <Btn variant="ghost" onClick={() => setShowModal(false)}>ط¥ظ„ط؛ط§ط،</Btn>
+            <Btn variant="success" icon="check" onClick={save}>حفظ المنتج</Btn>
+            <Btn variant="ghost" onClick={() => setShowModal(false)}>إلغاء</Btn>
           </div>
         </Modal>
       )}
@@ -348,52 +348,52 @@ const Inventory = ({ products, setProducts, toast }) => {
 // Partners
 const Partners = ({ partners, setPartners, toast }) => {
   const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({ name: "", type: "ط¹ظ…ظٹظ„", phone: "" });
+  const [form, setForm] = useState({ name: "", type: "عميل", phone: "" });
 
   const save = () => {
-    if (!form.name.trim()) return toast("ط£ط¯ط®ظ„ ط§ط³ظ… ط§ظ„ط­ط³ط§ط¨", "error");
+    if (!form.name.trim()) return toast("أدخل اسم الحساب", "error");
     const list = DB.get("partners");
     const newP = { id: DB.nextId(list), ...form, balance: 0 };
     const updated = [...list, newP];
     DB.set("partners", updated);
     setPartners(updated);
     setShowModal(false);
-    setForm({ name: "", type: "ط¹ظ…ظٹظ„", phone: "" });
-    toast(`طھظ… ط¥ظ†ط´ط§ط، ط­ط³ط§ط¨ ${form.type}: ${form.name}`, "success");
+    setForm({ name: "", type: "عميل", phone: "" });
+    toast(`تم إنشاء حساب ${form.type}: ${form.name}`, "success");
   };
 
   const del = (id) => {
-    if (!confirm("ط­ط°ظپ ظ‡ط°ط§ ط§ظ„ط­ط³ط§ط¨طں")) return;
+    if (!confirm("حذف هذا الحساب؟")) return;
     const updated = partners.filter(p => p.id !== id);
     DB.set("partners", updated);
     setPartners(updated);
-    toast("طھظ… ط§ظ„ط­ط°ظپ", "warn");
+    toast("تم الحذف", "warn");
   };
 
-  const clients = partners.filter(p => p.type === "ط¹ظ…ظٹظ„");
-  const suppliers = partners.filter(p => p.type === "ظ…ظˆط±ط¯");
+  const clients = partners.filter(p => p.type === "عميل");
+  const suppliers = partners.filter(p => p.type === "مورد");
 
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, direction: "rtl" }}>
-        <h2 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: 0 }}>ط§ظ„ط¹ظ…ظ„ط§ط، ظˆط§ظ„ظ…ظˆط±ط¯ظˆظ†</h2>
-        <Btn icon="plus" onClick={() => setShowModal(true)}>ظپطھط­ ط­ط³ط§ط¨ ط¬ط¯ظٹط¯</Btn>
+        <h2 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: 0 }}>العملاء والموردون</h2>
+        <Btn icon="plus" onClick={() => setShowModal(true)}>فتح حساب جديد</Btn>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
         {/* Clients */}
         <div style={{ background: "#1a1f2e", borderRadius: 16, border: "1px solid #2d3447", overflow: "hidden" }}>
           <div style={{ padding: "16px 20px", borderBottom: "1px solid #2d3447", display: "flex", alignItems: "center", gap: 10, direction: "rtl" }}>
-            <span style={{ color: "#10b981" }}>ًں‘¤</span>
-            <h3 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: 0, fontSize: 16 }}>ط§ظ„ط¹ظ…ظ„ط§ط، ({clients.length})</h3>
+            <span style={{ color: "#10b981" }}>👤</span>
+            <h3 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: 0, fontSize: 16 }}>العملاء ({clients.length})</h3>
           </div>
           <Table
-            cols={["ط§ظ„ط§ط³ظ…", "ط§ظ„ط¬ظˆط§ظ„", "ط§ظ„ط±طµظٹط¯", "ط­ط°ظپ"]}
+            cols={["الاسم", "الجوال", "الرصيد", "حذف"]}
             rows={clients.map(p => [
               <strong style={{ color: "#f1f5f9" }}>{p.name}</strong>,
-              p.phone || "â€”",
-              <span style={{ color: p.balance >= 0 ? "#10b981" : "#ef4444", fontWeight: 700 }}>{p.balance.toFixed(2)} ط±.ط³</span>,
-              <button onClick={() => del(p.id)} style={{ background: "#ef444420", border: "none", color: "#ef4444", borderRadius: 8, padding: "4px 10px", cursor: "pointer" }}>ط­ط°ظپ</button>
+              p.phone || "—",
+              <span style={{ color: p.balance >= 0 ? "#10b981" : "#ef4444", fontWeight: 700 }}>{p.balance.toFixed(2)} ر.س</span>,
+              <button onClick={() => del(p.id)} style={{ background: "#ef444420", border: "none", color: "#ef4444", borderRadius: 8, padding: "4px 10px", cursor: "pointer" }}>حذف</button>
             ])}
           />
         </div>
@@ -401,30 +401,30 @@ const Partners = ({ partners, setPartners, toast }) => {
         {/* Suppliers */}
         <div style={{ background: "#1a1f2e", borderRadius: 16, border: "1px solid #2d3447", overflow: "hidden" }}>
           <div style={{ padding: "16px 20px", borderBottom: "1px solid #2d3447", display: "flex", alignItems: "center", gap: 10, direction: "rtl" }}>
-            <span style={{ color: "#6366f1" }}>ًںڈ­</span>
-            <h3 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: 0, fontSize: 16 }}>ط§ظ„ظ…ظˆط±ط¯ظˆظ† ({suppliers.length})</h3>
+            <span style={{ color: "#6366f1" }}>🏭</span>
+            <h3 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: 0, fontSize: 16 }}>الموردون ({suppliers.length})</h3>
           </div>
           <Table
-            cols={["ط§ظ„ط§ط³ظ…", "ط§ظ„ط¬ظˆط§ظ„", "ط§ظ„ط±طµظٹط¯", "ط­ط°ظپ"]}
+            cols={["الاسم", "الجوال", "الرصيد", "حذف"]}
             rows={suppliers.map(p => [
               <strong style={{ color: "#f1f5f9" }}>{p.name}</strong>,
-              p.phone || "â€”",
-              <span style={{ color: p.balance >= 0 ? "#10b981" : "#ef4444", fontWeight: 700 }}>{p.balance.toFixed(2)} ط±.ط³</span>,
-              <button onClick={() => del(p.id)} style={{ background: "#ef444420", border: "none", color: "#ef4444", borderRadius: 8, padding: "4px 10px", cursor: "pointer" }}>ط­ط°ظپ</button>
+              p.phone || "—",
+              <span style={{ color: p.balance >= 0 ? "#10b981" : "#ef4444", fontWeight: 700 }}>{p.balance.toFixed(2)} ر.س</span>,
+              <button onClick={() => del(p.id)} style={{ background: "#ef444420", border: "none", color: "#ef4444", borderRadius: 8, padding: "4px 10px", cursor: "pointer" }}>حذف</button>
             ])}
           />
         </div>
       </div>
 
       {showModal && (
-        <Modal title="ظپطھط­ ط­ط³ط§ط¨ ط¬ط¯ظٹط¯" onClose={() => setShowModal(false)}>
-          <Input label="ط§ظ„ط§ط³ظ… / ط§ط³ظ… ط§ظ„ط´ط±ظƒط© *" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
-          <Select label="ظ†ظˆط¹ ط§ظ„ط­ط³ط§ط¨" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}
-            options={[{ value: "ط¹ظ…ظٹظ„", label: "ًں‘¤ ط¹ظ…ظٹظ„" }, { value: "ظ…ظˆط±ط¯", label: "ًںڈ­ ظ…ظˆط±ط¯" }]} />
-          <Input label="ط±ظ‚ظ… ط§ظ„ط¬ظˆط§ظ„" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="05xxxxxxxx" />
+        <Modal title="فتح حساب جديد" onClose={() => setShowModal(false)}>
+          <Input label="الاسم / اسم الشركة *" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
+          <Select label="نوع الحساب" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}
+            options={[{ value: "عميل", label: "👤 عميل" }, { value: "مورد", label: "🏭 مورد" }]} />
+          <Input label="رقم الجوال" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="05xxxxxxxx" />
           <div style={{ display: "flex", gap: 12 }}>
-            <Btn variant="success" icon="check" onClick={save}>ط¥ظ†ط´ط§ط، ط§ظ„ط­ط³ط§ط¨</Btn>
-            <Btn variant="ghost" onClick={() => setShowModal(false)}>ط¥ظ„ط؛ط§ط،</Btn>
+            <Btn variant="success" icon="check" onClick={save}>إنشاء الحساب</Btn>
+            <Btn variant="ghost" onClick={() => setShowModal(false)}>إلغاء</Btn>
           </div>
         </Modal>
       )}
@@ -434,15 +434,15 @@ const Partners = ({ partners, setPartners, toast }) => {
 
 // Invoice (Counter)
 const Invoice = ({ products, setProducts, partners, setPartners, transactions, setTransactions, toast }) => {
-  const [type, setType] = useState("ط¨ظٹط¹");
+  const [type, setType] = useState("بيع");
   const [partner, setPartner] = useState("");
   const [product, setProduct] = useState("");
   const [qty, setQty] = useState(1);
   const [price, setPrice] = useState(0);
-  const [method, setMethod] = useState("ظ†ظ‚ط¯ط§ظ‹ (ظƒط§ط´)");
+  const [method, setMethod] = useState("نقداً (كاش)");
   const [lastInvoice, setLastInvoice] = useState(null);
 
-  const partnerList = partners.filter(p => p.type === (type === "ط¨ظٹط¹" ? "ط¹ظ…ظٹظ„" : "ظ…ظˆط±ط¯"));
+  const partnerList = partners.filter(p => p.type === (type === "بيع" ? "عميل" : "مورد"));
   const total = qty * price;
 
   useEffect(() => {
@@ -452,7 +452,7 @@ const Invoice = ({ products, setProducts, partners, setPartners, transactions, s
   useEffect(() => {
     if (product) {
       const prod = products.find(p => p.name === product);
-      if (prod) setPrice(type === "ط¨ظٹط¹" ? prod.sale_price : prod.cost_price);
+      if (prod) setPrice(type === "بيع" ? prod.sale_price : prod.cost_price);
     }
   }, [product, type]);
 
@@ -461,21 +461,21 @@ const Invoice = ({ products, setProducts, partners, setPartners, transactions, s
   }, [products]);
 
   const submit = () => {
-    if (!partner || !product) return toast("ط§ط®طھط± ط§ظ„ط·ط±ظپ ظˆط§ظ„ظ…ظ†طھط¬", "error");
-    if (qty < 1) return toast("ط§ظ„ظƒظ…ظٹط© ظٹط¬ط¨ ط£ظ† طھظƒظˆظ† 1 ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„", "error");
-    if (price <= 0) return toast("ط£ط¯ط®ظ„ ط³ط¹ط± طµط­ظٹط­", "error");
+    if (!partner || !product) return toast("اختر الطرف والمنتج", "error");
+    if (qty < 1) return toast("الكمية يجب أن تكون 1 على الأقل", "error");
+    if (price <= 0) return toast("أدخل سعر صحيح", "error");
 
     const allProds = DB.get("products");
     const allPartners = DB.get("partners");
     const allTx = DB.get("transactions");
 
-    if (type === "ط¨ظٹط¹") {
+    if (type === "بيع") {
       const prod = allProds.find(p => p.name === product);
-      if (!prod || prod.stock < qty) return toast(`ط§ظ„ظ…ط®ط²ظˆظ† ط؛ظٹط± ظƒط§ظپظچ! ط§ظ„ظ…طھط§ط­: ${prod?.stock || 0}`, "error");
+      if (!prod || prod.stock < qty) return toast(`المخزون غير كافٍ! المتاح: ${prod?.stock || 0}`, "error");
       const updatedProds = allProds.map(p => p.name === product ? { ...p, stock: p.stock - qty } : p);
       DB.set("products", updatedProds);
       setProducts(updatedProds);
-      if (method === "ط¢ط¬ظ„ (ط¹ظ„ظ‰ ط§ظ„ط­ط³ط§ط¨)") {
+      if (method === "آجل (على الحساب)") {
         const updP = allPartners.map(p => p.name === partner ? { ...p, balance: p.balance + total } : p);
         DB.set("partners", updP);
         setPartners(updP);
@@ -484,7 +484,7 @@ const Invoice = ({ products, setProducts, partners, setPartners, transactions, s
       const updatedProds = allProds.map(p => p.name === product ? { ...p, stock: p.stock + qty, cost_price: price } : p);
       DB.set("products", updatedProds);
       setProducts(updatedProds);
-      if (method === "ط¢ط¬ظ„ (ط¹ظ„ظ‰ ط§ظ„ط­ط³ط§ط¨)") {
+      if (method === "آجل (على الحساب)") {
         const updP = allPartners.map(p => p.name === partner ? { ...p, balance: p.balance - total } : p);
         DB.set("partners", updP);
         setPartners(updP);
@@ -497,13 +497,13 @@ const Invoice = ({ products, setProducts, partners, setPartners, transactions, s
     DB.set("transactions", updatedTx);
     setTransactions(updatedTx);
     setLastInvoice(newTx);
-    toast(`طھظ… ط§ط¹طھظ…ط§ط¯ ط§ظ„ظپط§طھظˆط±ط© #${newTx.id} ط¨ظ†ط¬ط§ط­ ًںژ‰`, "success");
+    toast(`تم اعتماد الفاتورة #${newTx.id} بنجاح 🎉`, "success");
     setQty(1);
   };
 
   const printInvoice = (tx) => {
     const win = window.open("", "_blank");
-    const label = tx.type === "ط¨ظٹط¹" ? "ط§ظ„ط¹ظ…ظٹظ„" : "ط§ظ„ظ…ظˆط±ط¯";
+    const label = tx.type === "بيع" ? "العميل" : "المورد";
     win.document.write(`
       <html dir="rtl"><head><meta charset="utf-8">
       <style>body{font-family:Tajawal,Arial;padding:30px;direction:rtl;max-width:380px;margin:auto}
@@ -513,18 +513,18 @@ const Invoice = ({ products, setProducts, partners, setPartners, transactions, s
       .total{font-size:18px;font-weight:800;text-align:center;margin-top:16px;padding:10px;background:#f5f5f5;border-radius:8px}
       .footer{text-align:center;color:#999;font-size:12px;margin-top:16px}
       </style></head><body>
-      <div class="logo">ًںڈھ ط´ط±ظƒط© ط±ط§ط¦ط¯ ظ„ظ„طھط¬ط§ط±ط©</div>
-      <div class="sub">${tx.type === "ط¨ظٹط¹" ? "ظپط§طھظˆط±ط© ظ…ط¨ظٹط¹ط§طھ" : "ظپط§طھظˆط±ط© ظ…ط´طھط±ظٹط§طھ"} | ${tx.date}</div>
+      <div class="logo">🏪 شركة رائد للتجارة</div>
+      <div class="sub">${tx.type === "بيع" ? "فاتورة مبيعات" : "فاتورة مشتريات"} | ${tx.date}</div>
       <hr>
       <table>
         <tr><td><b>${label}</b></td><td>${tx.partner_name}</td></tr>
-        <tr><td><b>ط·ط±ظٹظ‚ط© ط§ظ„ط¯ظپط¹</b></td><td>${tx.payment_method}</td></tr>
-        <tr><td><b>ط§ظ„ظ…ظ†طھط¬</b></td><td>${tx.product_name}</td></tr>
-        <tr><td><b>ط§ظ„ظƒظ…ظٹط©</b></td><td>${tx.quantity}</td></tr>
-        <tr><td><b>ط³ط¹ط± ط§ظ„ظˆط­ط¯ط©</b></td><td>${tx.price.toFixed(2)} ط±.ط³</td></tr>
+        <tr><td><b>طريقة الدفع</b></td><td>${tx.payment_method}</td></tr>
+        <tr><td><b>المنتج</b></td><td>${tx.product_name}</td></tr>
+        <tr><td><b>الكمية</b></td><td>${tx.quantity}</td></tr>
+        <tr><td><b>سعر الوحدة</b></td><td>${tx.price.toFixed(2)} ر.س</td></tr>
       </table>
-      <div class="total">ط§ظ„ط¥ط¬ظ…ط§ظ„ظٹ: ${tx.total.toFixed(2)} ط±ظٹط§ظ„ ط³ط¹ظˆط¯ظٹ</div>
-      <div class="footer">ظپط§طھظˆط±ط© ط±ظ‚ظ… #${tx.id} â€” ظ†ط¸ط§ظ… ط±ط§ط¦ط¯ ط§ظ„ظ…ط­ط§ط³ط¨ظٹ<br>ط´ظƒط±ط§ظ‹ ظ„طھط¹ط§ظ…ظ„ظƒظ… ظ…ط¹ظ†ط§ ًں¤‌</div>
+      <div class="total">الإجمالي: ${tx.total.toFixed(2)} ريال سعودي</div>
+      <div class="footer">فاتورة رقم #${tx.id} — نظام رائد المحاسبي<br>شكراً لتعاملكم معنا 🤝</div>
       </body></html>`);
     win.document.close();
     setTimeout(() => win.print(), 400);
@@ -533,9 +533,9 @@ const Invoice = ({ products, setProducts, partners, setPartners, transactions, s
   if (products.length === 0 || partnerList.length === 0) {
     return (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 60, gap: 16 }}>
-        <div style={{ fontSize: 48 }}>âڑ ï¸ڈ</div>
+        <div style={{ fontSize: 48 }}>⚠️</div>
         <h3 style={{ color: "#f59e0b", fontFamily: "Tajawal, sans-serif", textAlign: "center" }}>
-          {products.length === 0 ? "ط£ط¶ظپ ظ…ظ†طھط¬ط§ظ‹ ظˆط§ط­ط¯ط§ظ‹ ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„ ط£ظˆظ„ط§ظ‹" : `ط£ط¶ظپ ${type === "ط¨ظٹط¹" ? "ط¹ظ…ظٹظ„ط§ظ‹" : "ظ…ظˆط±ط¯ط§ظ‹"} ط£ظˆظ„ط§ظ‹ ظ…ظ† ظ‚ط³ظ… ط§ظ„ط­ط³ط§ط¨ط§طھ`}
+          {products.length === 0 ? "أضف منتجاً واحداً على الأقل أولاً" : `أضف ${type === "بيع" ? "عميلاً" : "مورداً"} أولاً من قسم الحسابات`}
         </h3>
       </div>
     );
@@ -543,80 +543,80 @@ const Invoice = ({ products, setProducts, partners, setPartners, transactions, s
 
   return (
     <div>
-      <h2 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", marginBottom: 24 }}>ظƒط§ظˆظ†طھط± ط§ظ„ظپظˆط§طھظٹط± ط§ظ„ط°ظƒظٹ</h2>
+      <h2 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", marginBottom: 24 }}>كاونتر الفواتير الذكي</h2>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
         {/* Form */}
         <div style={{ background: "#1a1f2e", borderRadius: 16, padding: 28, border: "1px solid #2d3447", direction: "rtl" }}>
           <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
-            {["ط¨ظٹط¹", "ط´ط±ط§ط،"].map(t => (
+            {["بيع", "شراء"].map(t => (
               <button key={t} onClick={() => setType(t)} style={{
                 flex: 1, padding: "12px", border: "2px solid", borderRadius: 12,
                 cursor: "pointer", fontFamily: "Tajawal, sans-serif", fontSize: 15, fontWeight: 700, transition: "all 0.2s",
-                background: type === t ? (t === "ط¨ظٹط¹" ? "#10b98120" : "#6366f120") : "transparent",
-                borderColor: type === t ? (t === "ط¨ظٹط¹" ? "#10b981" : "#6366f1") : "#2d3447",
-                color: type === t ? (t === "ط¨ظٹط¹" ? "#10b981" : "#6366f1") : "#64748b",
+                background: type === t ? (t === "بيع" ? "#10b98120" : "#6366f120") : "transparent",
+                borderColor: type === t ? (t === "بيع" ? "#10b981" : "#6366f1") : "#2d3447",
+                color: type === t ? (t === "بيع" ? "#10b981" : "#6366f1") : "#64748b",
               }}>
-                {t === "ط¨ظٹط¹" ? "ًں›’ ظپط§طھظˆط±ط© ط¨ظٹط¹" : "ًں“¥ ظپط§طھظˆط±ط© ط´ط±ط§ط،"}
+                {t === "بيع" ? "🛒 فاتورة بيع" : "📥 فاتورة شراء"}
               </button>
             ))}
           </div>
 
-          <Select label={type === "ط¨ظٹط¹" ? "ط§ظ„ط¹ظ…ظٹظ„" : "ط§ظ„ظ…ظˆط±ط¯"} value={partner} onChange={e => setPartner(e.target.value)}
+          <Select label={type === "بيع" ? "العميل" : "المورد"} value={partner} onChange={e => setPartner(e.target.value)}
             options={partnerList.map(p => ({ value: p.name, label: p.name }))} />
 
-          <Select label="ط§ظ„ظ…ظ†طھط¬" value={product} onChange={e => setProduct(e.target.value)}
-            options={products.map(p => ({ value: p.name, label: `${p.name} (ظ…طھظˆظپط±: ${p.stock})` }))} />
+          <Select label="المنتج" value={product} onChange={e => setProduct(e.target.value)}
+            options={products.map(p => ({ value: p.name, label: `${p.name} (متوفر: ${p.stock})` }))} />
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <Input label="ط§ظ„ظƒظ…ظٹط©" type="number" min="1" value={qty} onChange={e => setQty(+e.target.value)} />
-            <Input label="ط³ط¹ط± ط§ظ„ظˆط­ط¯ط©" type="number" step="0.5" value={price} onChange={e => setPrice(+e.target.value)} />
+            <Input label="الكمية" type="number" min="1" value={qty} onChange={e => setQty(+e.target.value)} />
+            <Input label="سعر الوحدة" type="number" step="0.5" value={price} onChange={e => setPrice(+e.target.value)} />
           </div>
 
-          <Select label="ط·ط±ظٹظ‚ط© ط§ظ„ط³ط¯ط§ط¯" value={method} onChange={e => setMethod(e.target.value)}
+          <Select label="طريقة السداد" value={method} onChange={e => setMethod(e.target.value)}
             options={[
-              { value: "ظ†ظ‚ط¯ط§ظ‹ (ظƒط§ط´)", label: "ًں’µ ظ†ظ‚ط¯ط§ظ‹ (ظƒط§ط´)" },
-              { value: "ط¨ط·ط§ظ‚ط© ظ…ط¯ظ‰ / ط´ط¨ظƒط©", label: "ًں’³ ط¨ط·ط§ظ‚ط© ظ…ط¯ظ‰ / ط´ط¨ظƒط©" },
-              { value: "طھط­ظˆظٹظ„ ط¨ظ†ظƒظٹ ظ…ط¨ط§ط´ط±", label: "ًںڈ¦ طھط­ظˆظٹظ„ ط¨ظ†ظƒظٹ" },
-              { value: "ط¢ط¬ظ„ (ط¹ظ„ظ‰ ط§ظ„ط­ط³ط§ط¨)", label: "ًں“‹ ط¢ط¬ظ„ (ط¹ظ„ظ‰ ط§ظ„ط­ط³ط§ط¨)" },
+              { value: "نقداً (كاش)", label: "💵 نقداً (كاش)" },
+              { value: "بطاقة مدى / شبكة", label: "💳 بطاقة مدى / شبكة" },
+              { value: "تحويل بنكي مباشر", label: "🏦 تحويل بنكي" },
+              { value: "آجل (على الحساب)", label: "📋 آجل (على الحساب)" },
             ]} />
 
           <div style={{ background: "#0f1219", borderRadius: 12, padding: "16px 20px", marginBottom: 20, direction: "rtl", border: "1px solid #2d3447" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ color: "#64748b", fontFamily: "Tajawal, sans-serif" }}>ط§ظ„ط¥ط¬ظ…ط§ظ„ظٹ:</span>
-              <span style={{ color: "#f59e0b", fontFamily: "Tajawal, sans-serif", fontSize: 22, fontWeight: 800 }}>{total.toFixed(2)} ط±.ط³</span>
+              <span style={{ color: "#64748b", fontFamily: "Tajawal, sans-serif" }}>الإجمالي:</span>
+              <span style={{ color: "#f59e0b", fontFamily: "Tajawal, sans-serif", fontSize: 22, fontWeight: 800 }}>{total.toFixed(2)} ر.س</span>
             </div>
           </div>
 
           <Btn variant="success" icon="check" onClick={submit} style={{ width: "100%", justifyContent: "center", padding: "14px" }}>
-            ط§ط¹طھظ…ط§ط¯ ط§ظ„ظپط§طھظˆط±ط© ظˆطھط±ط­ظٹظ„ظ‡ط§
+            اعتماد الفاتورة وترحيلها
           </Btn>
         </div>
 
         {/* Last Invoice Preview */}
         <div style={{ background: "#1a1f2e", borderRadius: 16, padding: 28, border: "1px solid #2d3447", direction: "rtl" }}>
-          <h3 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: "0 0 20px", fontSize: 16 }}>ًں§¾ ط§ظ„ظپط§طھظˆط±ط© ط§ظ„ط£ط®ظٹط±ط©</h3>
+          <h3 style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", margin: "0 0 20px", fontSize: 16 }}>🧾 الفاتورة الأخيرة</h3>
           {!lastInvoice ? (
             <div style={{ textAlign: "center", padding: 40 }}>
-              <div style={{ fontSize: 48, marginBottom: 12 }}>ًں§¾</div>
-              <p style={{ color: "#475569", fontFamily: "Tajawal, sans-serif" }}>ظ„ظ… ظٹطھظ… ط¥طµط¯ط§ط± ظپط§طھظˆط±ط© ط¨ط¹ط¯</p>
+              <div style={{ fontSize: 48, marginBottom: 12 }}>🧾</div>
+              <p style={{ color: "#475569", fontFamily: "Tajawal, sans-serif" }}>لم يتم إصدار فاتورة بعد</p>
             </div>
           ) : (
             <div>
               <div style={{ background: "#0f1219", borderRadius: 12, padding: 20, marginBottom: 16 }}>
                 <div style={{ textAlign: "center", marginBottom: 16 }}>
-                  <div style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", fontSize: 18, fontWeight: 800 }}>ًںڈھ ط´ط±ظƒط© ط±ط§ط¦ط¯ ظ„ظ„طھط¬ط§ط±ط©</div>
+                  <div style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", fontSize: 18, fontWeight: 800 }}>🏪 شركة رائد للتجارة</div>
                   <div style={{ color: "#64748b", fontSize: 13, fontFamily: "Tajawal, sans-serif" }}>
-                    {lastInvoice.type === "ط¨ظٹط¹" ? "ظپط§طھظˆط±ط© ظ…ط¨ظٹط¹ط§طھ" : "ظپط§طھظˆط±ط© ظ…ط´طھط±ظٹط§طھ"} #{lastInvoice.id}
+                    {lastInvoice.type === "بيع" ? "فاتورة مبيعات" : "فاتورة مشتريات"} #{lastInvoice.id}
                   </div>
                 </div>
                 {[
-                  [lastInvoice.type === "ط¨ظٹط¹" ? "ط§ظ„ط¹ظ…ظٹظ„" : "ط§ظ„ظ…ظˆط±ط¯", lastInvoice.partner_name],
-                  ["ط§ظ„ظ…ظ†طھط¬", lastInvoice.product_name],
-                  ["ط§ظ„ظƒظ…ظٹط©", lastInvoice.quantity],
-                  ["ط³ط¹ط± ط§ظ„ظˆط­ط¯ط©", `${lastInvoice.price.toFixed(2)} ط±.ط³`],
-                  ["ط·ط±ظٹظ‚ط© ط§ظ„ط¯ظپط¹", lastInvoice.payment_method],
-                  ["ط§ظ„طھط§ط±ظٹط®", lastInvoice.date],
+                  [lastInvoice.type === "بيع" ? "العميل" : "المورد", lastInvoice.partner_name],
+                  ["المنتج", lastInvoice.product_name],
+                  ["الكمية", lastInvoice.quantity],
+                  ["سعر الوحدة", `${lastInvoice.price.toFixed(2)} ر.س`],
+                  ["طريقة الدفع", lastInvoice.payment_method],
+                  ["التاريخ", lastInvoice.date],
                 ].map(([k, v]) => (
                   <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #1e2535" }}>
                     <span style={{ color: "#64748b", fontFamily: "Tajawal, sans-serif", fontSize: 14 }}>{k}</span>
@@ -624,12 +624,12 @@ const Invoice = ({ products, setProducts, partners, setPartners, transactions, s
                   </div>
                 ))}
                 <div style={{ marginTop: 16, background: "#f59e0b15", borderRadius: 10, padding: "14px", textAlign: "center", border: "1px solid #f59e0b40" }}>
-                  <span style={{ color: "#64748b", fontFamily: "Tajawal, sans-serif", fontSize: 13 }}>ط§ظ„ط¥ط¬ظ…ط§ظ„ظٹ</span>
-                  <div style={{ color: "#f59e0b", fontFamily: "Tajawal, sans-serif", fontSize: 26, fontWeight: 800 }}>{lastInvoice.total.toFixed(2)} ط±.ط³</div>
+                  <span style={{ color: "#64748b", fontFamily: "Tajawal, sans-serif", fontSize: 13 }}>الإجمالي</span>
+                  <div style={{ color: "#f59e0b", fontFamily: "Tajawal, sans-serif", fontSize: 26, fontWeight: 800 }}>{lastInvoice.total.toFixed(2)} ر.س</div>
                 </div>
               </div>
               <Btn variant="ghost" icon="print" onClick={() => printInvoice(lastInvoice)} style={{ width: "100%", justifyContent: "center" }}>
-                ط·ط¨ط§ط¹ط© ط§ظ„ظپط§طھظˆط±ط©
+                طباعة الفاتورة
               </Btn>
             </div>
           )}
@@ -661,10 +661,10 @@ export default function App() {
   }, []);
 
   const nav = [
-    { id: "dashboard", label: "ظ„ظˆط­ط© ط§ظ„ظ‚ظٹط§ط¯ط©", icon: "dashboard", color: "#6366f1" },
-    { id: "inventory", label: "ط¥ط¯ط§ط±ط© ط§ظ„ظ…ط®ط²ظˆظ†", icon: "inventory", color: "#f59e0b" },
-    { id: "partners", label: "ط§ظ„ط¹ظ…ظ„ط§ط، ظˆط§ظ„ظ…ظˆط±ط¯ظˆظ†", icon: "partners", color: "#10b981" },
-    { id: "invoice", label: "ظƒط§ظˆظ†طھط± ط§ظ„ظپظˆط§طھظٹط±", icon: "invoice", color: "#ef4444" },
+    { id: "dashboard", label: "لوحة القيادة", icon: "dashboard", color: "#6366f1" },
+    { id: "inventory", label: "إدارة المخزون", icon: "inventory", color: "#f59e0b" },
+    { id: "partners", label: "العملاء والموردون", icon: "partners", color: "#10b981" },
+    { id: "invoice", label: "كاونتر الفواتير", icon: "invoice", color: "#ef4444" },
   ];
 
   return (
@@ -689,10 +689,10 @@ export default function App() {
         }}>
           {/* Logo */}
           <div style={{ padding: sidebarOpen ? "24px 20px 20px" : "24px 12px 20px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid #1e2535" }}>
-            <div style={{ width: 40, height: 40, background: "linear-gradient(135deg,#6366f1,#8b5cf6)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 20 }}>ًںڈھ</div>
+            <div style={{ width: 40, height: 40, background: "linear-gradient(135deg,#6366f1,#8b5cf6)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 20 }}>🏪</div>
             {sidebarOpen && <div>
-              <div style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", fontSize: 15, fontWeight: 800 }}>ظ†ط¸ط§ظ… ط±ط§ط¦ط¯</div>
-              <div style={{ color: "#64748b", fontFamily: "Tajawal, sans-serif", fontSize: 11 }}>ط§ظ„ظ…ط­ط§ط³ط¨ظٹ ط§ظ„ظ…طھظƒط§ظ…ظ„</div>
+              <div style={{ color: "#f1f5f9", fontFamily: "Tajawal, sans-serif", fontSize: 15, fontWeight: 800 }}>نظام رائد</div>
+              <div style={{ color: "#64748b", fontFamily: "Tajawal, sans-serif", fontSize: 11 }}>المحاسبي المتكامل</div>
             </div>}
           </div>
 
@@ -720,7 +720,7 @@ export default function App() {
             borderRadius: 10, cursor: "pointer", color: "#64748b", fontFamily: "Tajawal, sans-serif",
             fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", gap: 8
           }}>
-            {sidebarOpen ? "â—€ ط·ظٹ" : "â–¶"}
+            {sidebarOpen ? "◀ طي" : "▶"}
           </button>
         </div>
 
@@ -734,70 +734,6 @@ export default function App() {
       </div>
 
       {toastMsg && <Toast msg={toastMsg.msg} type={toastMsg.type} onClose={() => setToastMsg(null)} />}
-                  st.rerun()
-                
-            elif f_type == "↩️ مرتجع مشتريات":
-                cursor.execute("UPDATE products SET stock = stock - ? WHERE name = ?", (f_qty, chosen_product))
-                cursor.execute("INSERT INTO transactions (type, partner_name, product_name, quantity, price, total, payment_method, date) VALUES ('مرتجع شراء', ?, ?, ?, ?, ?, ?, ?)",
-                               (chosen_partner, chosen_product, f_qty, f_price, f_total, f_method, date_str))
-                conn.commit()
-                st.success("↩️ تم إرجاع السلعة للمورد!")
-                st.rerun()
-
-# ==========================================
-# التبويب الثاني: التقارير والتحليل المالي
-# ==========================================
-with tab2:
-    st.subheader("📊 الأداء المالي الحركي")
-    
-    sales_total = pd.read_sql_query("SELECT SUM(total) FROM transactions WHERE type='بيع'", conn).iloc[0,0] or 0.0
-    ret_sales = pd.read_sql_query("SELECT SUM(total) FROM transactions WHERE type='مرتجع بيع'", conn).iloc[0,0] or 0.0
-    net_sales = sales_total - ret_sales
-    
-    purchases_total = pd.read_sql_query("SELECT SUM(total) FROM transactions WHERE type='شراء'", conn).iloc[0,0] or 0.0
-    
-    col_m1, col_m2, col_m3 = st.columns(3)
-    col_m1.metric("📈 صافي المبيعات", f"{net_sales:,.2f} ريال")
-    col_m2.metric("📉 المشتريات", f"{purchases_total:,.2f}  ريال")
-    col_m3.metric("💰 صافي الربح المتوقع", f"{(net_sales * 0.25):,.2f} ريال") # ربح تقديري سريع لتخفيف المعالجة
-    
-    st.markdown("---")
-    st.caption("📋 آخر 5 فواتير مسجلة اختصاراً للأداء:")
-    df_mini_trans = pd.read_sql_query("SELECT type as 'الحركة', product_name as 'السلعة', total as 'المبلغ', date as 'التاريخ' FROM transactions ORDER BY id DESC LIMIT 5", conn)
-    st.dataframe(df_mini_trans, use_container_width=True, hide_index=True)
-
-# ==========================================
-# التبويب الثالث: المدخلات والإعدادات
-# ==========================================
-with tab3:
-    st.subheader("⚙️ إعداد السلع والحسابات")
-    col_in1, col_in2 = st.columns(2)
-    
-    with col_in1:
-        st.write("**📦 إضافة سلعة جديدة:**")
-        in_p_name = st.text_input("اسم المنتج:")
-        in_p_cost = st.number_input("سعر التكلفة:", min_value=0.0)
-        in_p_sale = st.number_input("سعر البيع الافتراضي:", min_value=0.0)
-        if st.button("➕ حفظ السلعة"):
-            if in_p_name:
-                try:
-                    cursor.execute("INSERT INTO products (name, cost_price, sale_price) VALUES (?, ?, ?)", (in_p_name, in_p_cost, in_p_sale))
-                    conn.commit()
-                    st.success("تم الحفظ!")
-                    st.rerun()
-                except:
-                    st.error("هذا المنتج موجود مسبقاً!")
-                    
-    with col_in2:
-        st.write("**👥 إضافة عميل أو مورد:**")
-        in_b_name = st.text_input("الاسم:")
-        in_b_type = st.selectbox("النوع:", ["عميل", "مورد"])
-        if st.button("👥 حفظ الاسم"):
-            if in_b_name:
-                try:
-                    cursor.execute("INSERT INTO partners (name, type) VALUES (?, ?)", (in_b_name, in_b_type))
-                    conn.commit()
-                    st.success("تم تسجيل الاسم!")
-                    st.rerun()
-                except:
-                    st.error("الاسم مسجل بالفعل!")
+    </>
+  );
+}
