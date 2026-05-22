@@ -6,6 +6,7 @@ from datetime import datetime
 st.set_page_config(page_title="النظام المحاسبي الذكي", layout="wide")
 st.title("📊 نظام إدارة المبيعات والمشتريات والمخزون")
 
+# الاتصال بقاعدة البيانات وإنشاء الجداول
 conn = sqlite3.connect('accounting_web.db', check_same_thread=False)
 cursor = conn.cursor()
 
@@ -13,6 +14,7 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY AU
 cursor.execute('''CREATE TABLE IF NOT EXISTS transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, product_name TEXT, quantity INTEGER, price REAL, total REAL, date TEXT)''')
 conn.commit()
 
+# --- القائمة الجانبية ---
 st.sidebar.header("📥 مدخلات النظام")
 menu = st.sidebar.selectbox("اختر العملية:", ["إدارة المنتجات", "فاتورة جديدة"])
 
@@ -52,6 +54,7 @@ elif menu == "فاتورة جديدة":
                 else:
                     st.sidebar.error(f"المخزون غير كافٍ! المتاح: {current_stock}")
 
+# --- الحسابات الإجمالية للمؤشرات ---
 sales_total = pd.read_sql_query("SELECT SUM(total) FROM transactions WHERE type='بيع'", conn).iloc[0,0] or 0.0
 purchases_total = pd.read_sql_query("SELECT SUM(total) FROM transactions WHERE type='شراء'", conn).iloc[0,0] or 0.0
 df_sales_calc = pd.read_sql_query("SELECT t.quantity, t.total as sales_value, p.cost_price FROM transactions t JOIN products p ON t.product_name = p.name WHERE t.type='بيع'", conn)
@@ -63,10 +66,20 @@ col2.metric("📉 إجمالي المشتريات", f"{purchases_total:,.2f} ر�
 col3.metric("💰 صافي الأرباح", f"{net_profit:,.2f} ريال")
 
 st.markdown("---")
+
+# --- عرض الجداول بعد الإصلاح وحماية البيانات ---
 tab1, tab2 = st.tabs(["📦 حالة المخزن الحالي", "🧾 سجل الفواتير"])
+
 with tab1:
     df_inventory = pd.read_sql_query("SELECT name as 'اسم المنتج', stock as 'الكمية', cost_price as 'التكلفة', sale_price as 'سعر البيع' FROM products", conn)
-    st.dataframe(df_inventory if not df_inventory.empty else "المخزن فارغ حالياً.", use_container_width=True)
+    if not df_inventory.empty:
+        st.dataframe(df_inventory, use_container_width=True)
+    else:
+        st.info("المخزن فارغ حالياً. أضف منتجات من القائمة الجانبية.")
+
 with tab2:
     df_trans = pd.read_sql_query("SELECT type as 'النوع', product_name as 'المنتج', quantity as 'الكمية', price as 'السعر', total as 'الإجمالي', date as 'التاريخ' FROM transactions ORDER BY id DESC", conn)
-    st.dataframe(df_trans if not df_trans.empty else "لا توجد فواتير بعد.", use_container_width=True)
+    if not df_trans.empty:
+        st.dataframe(df_trans, use_container_width=True)
+    else:
+        st.info("لا توجد فواتير مسجلة بعد.")
